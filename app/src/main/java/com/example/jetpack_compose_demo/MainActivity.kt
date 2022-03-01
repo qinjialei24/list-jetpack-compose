@@ -3,9 +3,9 @@ package com.example.jetpack_compose_demo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.jetpack_compose_demo.ui.theme.JetpackcomposedemoTheme
+
+data class GoodsItem(
+    val id: String,
+    val name: String,
+    val imgUrl: String
+)
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,45 +31,41 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+val testData: List<GoodsItem> = listOf(
+    GoodsItem(name = "phone", imgUrl = "", id = "1"),
+    GoodsItem(name = "basketball", imgUrl = "", id = "2"),
+)
+
 
 @Composable
 fun App() {
-    TodoList(mutableListOf("摸鱼", "打游戏"))
+    GoodsList(testData)
 }
 
+
 @Composable
-fun TodoList(lists: MutableList<String>) {
+fun GoodsList(goodsList: List<GoodsItem>) {
     Surface(
         color = MaterialTheme.colors.primary,
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp).fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-        ) {
-            for (list in lists) {
-                TodoListItem(text = list)
+        LazyColumn() {
+            items(items = goodsList) { item ->
+                GoodsListItem(item = item)
             }
         }
     }
 }
 
+
 @Composable
-fun TodoListItem(text: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        val done = remember { mutableStateOf(false) }
-        Text(text = if (done.value) "$text completed!" else text, Modifier.padding(5.dp))
-        OutlinedButton(onClick = { done.value = !done.value }) {
-            Text(text = "completed!")
-        }
+fun GoodsListItem(item: GoodsItem) {
+    val (id, name) = item
+    Row(horizontalArrangement = Arrangement.Center) {
+        Text(name)
     }
 }
+
 
 @Preview
 @Composable
