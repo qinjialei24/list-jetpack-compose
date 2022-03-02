@@ -4,14 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +19,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 data class GoodsItem(
     val id: String,
@@ -44,12 +48,33 @@ val testData: List<GoodsItem> = listOf(
 
 @Composable
 fun App() {
-    GoodsList(testData)
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "goodsListScreen") {
+        composable("goodsListScreen") {
+            GoodsListScreen(
+                goodsList = testData,
+                navController = navController
+            )
+        }
+
+        composable("goodsDetailScreen") {
+            GoodsDetailScreen(navController)
+        }
+    }
+
 }
 
 
 @Composable
-fun GoodsList(goodsList: List<GoodsItem>) {
+fun GoodsDetailScreen(navController: NavController) {
+    Text(text = "i am detail")
+
+}
+
+
+@Composable
+fun GoodsListScreen(goodsList: List<GoodsItem>, navController: NavController) {
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier
@@ -58,7 +83,7 @@ fun GoodsList(goodsList: List<GoodsItem>) {
     ) {
         LazyColumn() {
             items(items = goodsList) { item ->
-                GoodsListItem(item = item)
+                GoodsListItem(item = item, navController = navController)
             }
         }
     }
@@ -66,9 +91,16 @@ fun GoodsList(goodsList: List<GoodsItem>) {
 
 
 @Composable
-fun GoodsListItem(item: GoodsItem) {
+fun GoodsListItem(item: GoodsItem, navController: NavController) {
     val (id, name) = item
-    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable {
+            navController.navigate("goodsDetailScreen")
+            print("111")
+        }
+    ) {
         Image(
             painterResource(
                 id = R.drawable.goods1
