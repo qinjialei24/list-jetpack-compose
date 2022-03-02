@@ -11,7 +11,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.RecomposeScope
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.internal.composableLambda
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -91,14 +95,20 @@ fun GoodsListScreen(goodsList: List<GoodsItem>, navController: NavController) {
 
 
 @Composable
-fun GoodsListItem(item: GoodsItem, navController: NavController) {
+fun GoodsListItem(
+    item: GoodsItem,
+    navController: NavController,
+    model: MainViewModel = viewModel()
+) {
     val (id, name) = item
+    val count by model.counterLiveData.observeAsState(0)
+
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable {
-            navController.navigate("goodsDetailScreen")
-            print("111")
+//            navController.navigate("goodsDetailScreen")
+            model.increaseCounter()
         }
     ) {
         Image(
@@ -113,6 +123,7 @@ fun GoodsListItem(item: GoodsItem, navController: NavController) {
                 .clip(RoundedCornerShape(50)),
         )
         Text(name)
+        Text(count.toString())
     }
 }
 
