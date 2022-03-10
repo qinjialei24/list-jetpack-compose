@@ -3,19 +3,22 @@ package com.example.jetpack_compose_demo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetpack_compose_demo.ui.theme.JetpackcomposedemoTheme
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
 
 
 class MainActivity : ComponentActivity() {
@@ -30,21 +33,25 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Composable
-fun MainContent() {
-
-}
-
-
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun App() {
-    Column() {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            BottomBar()
+    JetpackcomposedemoTheme() {
+        var tabPage by remember {
+            mutableStateOf(TabPage.Home)
+        }
+
+
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+            Scaffold(bottomBar = {
+                TabHome(selectedTabIndex = tabPage.ordinal, onSelectedTab = { tabPage = it })
+            }) {
+                Column {
+                    Text(text = tabPage.name)
+                }
+
+            }
+
         }
     }
 

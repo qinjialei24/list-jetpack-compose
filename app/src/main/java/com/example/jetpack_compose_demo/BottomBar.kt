@@ -33,7 +33,6 @@ fun BottomBar() {
 
         TabItem(
             if (viewModel.selectedTabIndex === 1) Icons.Filled.Menu else Icons.Outlined.Menu,
-
             "测试",
             Modifier.weight(1f),
             tint = Color.Green,
